@@ -21,28 +21,19 @@ const createBook = ({title, author, category, rating, numberOfPage, publisher,re
 
 /** get all book by category */
 
-const getAllBookByCategory = category => {
+const getAllBookByCategory = category => 
   new Promise((resolve, reject) => {
     bookModel
-      .findAll({
+      .find({
         category: category
       })
       .sort({ createdAt: -1 })
       .limit(20)
-      .select('title, rating, price')     
+      .select("title rating priceOfBook")     
       .exec()
-      .then(data => 
-        resolve(
-          data.map(book => 
-            Object.assign({}, book._doc, {
-              imageUrl: `api/book/${book._id}/image`
-            })
-          )  
-        )
-      )
+      .then(data => resolve(data))
       .catch(err => reject(err));
-  }) 
-}
+  });
 
 /** get book by id */
 const getBookById = id => 
@@ -51,13 +42,9 @@ const getBookById = id =>
       .findOne({
         _id: id
       })
-      .select("title, author, category, rating, price, numberOfPage, publisher,retailCompany, priceOfBook, description, imageFile")
+      .select("title author category rating numberOfPage publisher retailCompany priceOfBook description imageFile")
       .exec()
-      .then(data =>
-        resolve(
-          Object.assign({}, data._doc, {imageUrl: `api/books/${id}/avatar`})
-        )
-      )
+      .then(data => resolve(data))
       .catch(err => reject(err));
   })
 
